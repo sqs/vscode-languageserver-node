@@ -1145,10 +1145,14 @@ export class LanguageClient {
 	private initialize(connection: IConnection): Thenable<InitializeResult> {
 		this.refreshTrace(connection, false);
 		let initOption = this._clientOptions.initializationOptions;
+		let rootUri: string | null = null;
+		if (Workspace.rootPath) {
+			rootUri = Uri.parse(Workspace.rootPath).scheme ? Workspace.rootPath : Uri.file(Workspace.rootPath).toString();
+		}
 		let initParams: InitializeParams = {
 			processId: process.pid,
 			rootPath: Workspace.rootPath ? Workspace.rootPath : null,
-			rootUri: Workspace.rootPath ? Uri.file(Workspace.rootPath).toString() : null,
+			rootUri,
 			capabilities: clientCapabilities,
 			initializationOptions: is.func(initOption) ? initOption() : initOption,
 			trace: Trace.toString(this._trace)
