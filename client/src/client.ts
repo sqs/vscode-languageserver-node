@@ -1174,15 +1174,17 @@ export class LanguageClient {
 			if (this._clientOptions.documentSelector) {
 				let selectorOptions: TextDocumentRegistrationOptions = { documentSelector: this._clientOptions.documentSelector };
 				let textDocumentSyncOptions: TextDocumentSyncOptions | undefined = undefined;
-				if (is.number(this._capabilites.textDocumentSync) && this._capabilites.textDocumentSync !== TextDocumentSyncKind.None) {
-					textDocumentSyncOptions = {
-						openClose: true,
-						change: this._capabilites.textDocumentSync,
-						save: {
-							includeText: false
-						}
-					};
-				} else if (this._capabilites.textDocumentSync !== void 0 && this._capabilites.textDocumentSync === null) {
+				if (is.number(this._capabilites.textDocumentSync)) {
+					if (this._capabilites.textDocumentSync !== TextDocumentSyncKind.None) {
+						textDocumentSyncOptions = {
+							openClose: true,
+							change: this._capabilites.textDocumentSync,
+							save: {
+								includeText: false
+							}
+						};
+					}
+				} else if (this._capabilites.textDocumentSync !== void 0) {
 					textDocumentSyncOptions = this._capabilites.textDocumentSync as TextDocumentSyncOptions;
 				}
 				if (textDocumentSyncOptions) {
