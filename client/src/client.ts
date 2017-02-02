@@ -784,7 +784,7 @@ export class BaseLanguageClient {
 
 	private _id: string;
 	private _name: string;
-	private _streamOpener: () => Thenable<MessageStream>;
+	private _streamProvider: () => Thenable<MessageStream>;
 	protected _clientOptions: ResolvedClientOptions;
 
 	private _state: ClientState;
@@ -811,10 +811,10 @@ export class BaseLanguageClient {
 	private _c2p: c2p.Converter;
 	private _p2c: p2c.Converter;
 
-	public constructor(id: string, name: string, streamOpener: () => Thenable<MessageStream>, clientOptions: LanguageClientOptions) {
+	public constructor(id: string, name: string, streamProvider: () => Thenable<MessageStream>, clientOptions: LanguageClientOptions) {
 		this._id = id;
 		this._name = name;
-		this._streamOpener = streamOpener;
+		this._streamProvider = streamProvider;
 
 		clientOptions = clientOptions || {};
 		this._clientOptions = {
@@ -1322,7 +1322,7 @@ export class BaseLanguageClient {
 			this.handleConnectionClosed();
 		}
 
-		return this._streamOpener().then(stream => createConnection(stream, errorHandler, closeHandler));
+		return this._streamProvider().then(stream => createConnection(stream, errorHandler, closeHandler));
 	}
 
 	protected handleConnectionClosed() {
