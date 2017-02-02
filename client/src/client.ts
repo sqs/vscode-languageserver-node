@@ -376,7 +376,7 @@ class DocumentNotifiactions<P, E> implements FeatureHandler<TextDocumentRegistra
 	}
 
 	constructor(
-		protected _client: LanguageClient, private _event: Event<E>,
+		protected _client: BaseLanguageClient, private _event: Event<E>,
 		protected _type: NotificationType<P, DocumentSelector>, protected _createParams: CreateParamsSignature<E, P>,
 		protected _selectorFilter?: (selectors: IterableIterator<DocumentSelector>, data: E) => boolean) {
 	}
@@ -417,7 +417,7 @@ class DocumentNotifiactions<P, E> implements FeatureHandler<TextDocumentRegistra
 }
 
 class DidOpenTextDocumentFeature extends DocumentNotifiactions<DidOpenTextDocumentParams, TextDocument> {
-	constructor(client: LanguageClient, private _syncedDocuments: Map<string, TextDocument>) {
+	constructor(client: BaseLanguageClient, private _syncedDocuments: Map<string, TextDocument>) {
 		super(
 			client, Workspace.onDidOpenTextDocument, DidOpenTextDocumentNotification.type,
 			(textDocument) => client.code2ProtocolConverter.asOpenTextDocumentParams(textDocument),
@@ -451,7 +451,7 @@ class DidOpenTextDocumentFeature extends DocumentNotifiactions<DidOpenTextDocume
 
 class DidCloseTextDocumentFeature extends DocumentNotifiactions<DidCloseTextDocumentParams, TextDocument> {
 
-	constructor(client: LanguageClient, private _syncedDocuments: Map<string, TextDocument>) {
+	constructor(client: BaseLanguageClient, private _syncedDocuments: Map<string, TextDocument>) {
 		super(
 			client, Workspace.onDidCloseTextDocument, DidCloseTextDocumentNotification.type,
 			(textDocument) => client.code2ProtocolConverter.asCloseTextDocumentParams(textDocument),
@@ -489,7 +489,7 @@ class DidChangeTextDocumentFeature implements FeatureHandler<TextDocumentChangeR
 	private _forcingDelivery: boolean = false;
 	private _changeDelayer: { uri: string; delayer: Delayer<void> } | undefined;
 
-	constructor(private _client: LanguageClient) {
+	constructor(private _client: BaseLanguageClient) {
 	}
 
 	public register(data: RegistrationData<TextDocumentChangeRegistrationOptions>): void {
@@ -572,7 +572,7 @@ class WillSaveWaitUntilFeature implements FeatureHandler<TextDocumentRegistratio
 	private _listener: Disposable | undefined;
 	private _selectors: Map<string, DocumentSelector> = new Map<string, DocumentSelector>();
 
-	constructor(private _client: LanguageClient) {
+	constructor(private _client: BaseLanguageClient) {
 	}
 
 	public register(data: RegistrationData<TextDocumentRegistrationOptions>): void {
@@ -618,7 +618,7 @@ class DidSaveTextDocumentFeature extends DocumentNotifiactions<DidSaveTextDocume
 
 	private _includeText: boolean;
 
-	constructor(client: LanguageClient) {
+	constructor(client: BaseLanguageClient) {
 		super(
 			client, Workspace.onDidSaveTextDocument, DidSaveTextDocumentNotification.type,
 			(textDocument) => client.code2ProtocolConverter.asSaveTextDocumentParams(textDocument, this._includeText),
@@ -672,7 +672,7 @@ class ExecuteCommandFeature implements FeatureHandler<ExecuteCommandRegistration
 
 	private _commands: Map<string, Disposable[]> = new Map<string, Disposable[]>();
 
-	constructor(private _client: LanguageClient, private _logger: (type: RPCMessageType, error?: any) => void) {
+	constructor(private _client: BaseLanguageClient, private _logger: (type: RPCMessageType, error?: any) => void) {
 	}
 
 	public register(data: RegistrationData<ExecuteCommandRegistrationOptions>): void {
@@ -780,7 +780,7 @@ const clientCapabilities: ClientCapabilities = {
 	}
 }
 
-export class LanguageClient {
+export class BaseLanguageClient {
 
 	private _id: string;
 	private _name: string;
@@ -1994,7 +1994,7 @@ export class SettingMonitor {
 
 	private _listeners: Disposable[];
 
-	constructor(private _client: LanguageClient, private _setting: string) {
+	constructor(private _client: BaseLanguageClient, private _setting: string) {
 		this._listeners = [];
 	}
 
