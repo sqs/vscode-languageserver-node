@@ -1146,7 +1146,7 @@ export class BaseLanguageClient {
 		this.refreshTrace(connection, false);
 		let initOption = this._clientOptions.initializationOptions;
 		let initParams: InitializeParams = {
-			processId: typeof process !== 'undefined' ? process.pid : 0,
+			processId: typeof process !== 'undefined' ? process.pid : null,
 			rootPath: Workspace.rootPath ? Workspace.rootPath : null,
 			rootUri: Workspace.rootPath ? Uri.file(Workspace.rootPath).toString() : null,
 			capabilities: clientCapabilities,
