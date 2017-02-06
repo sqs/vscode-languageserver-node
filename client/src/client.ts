@@ -780,7 +780,7 @@ const clientCapabilities: ClientCapabilities = {
 	}
 }
 
-export class BaseLanguageClient {
+export abstract class BaseLanguageClient {
 
 	private _id: string;
 	private _name: string;
