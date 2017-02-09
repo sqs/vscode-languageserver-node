@@ -1,7 +1,7 @@
 'use strict';
 
-import { BaseLanguageClient } from './main';
+import { BaseLanguageClient } from './client';
 
 export class BrowserLanguageClient extends BaseLanguageClient {}
 
-export * from './main';
+export * from './client';
