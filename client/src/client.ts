@@ -352,7 +352,7 @@ interface RegistrationData<T> {
 }
 
 interface FeatureHandler<T> {
-	register(data: RegistrationData<T>): void;
+	register(data: RegistrationData<T>): any;
 	unregister(id: string): void;
 	dispose(): void;
 }
@@ -643,13 +643,14 @@ class LanguageFeature<T extends TextDocumentRegistrationOptions> implements Feat
 	constructor(private _createProvider: CreateProviderSignature<T>) {
 	}
 
-	public register(data: RegistrationData<T>): void {
+	public register(data: RegistrationData<T>): any {
 		if (!data.registerOptions.documentSelector) {
 			return;
 		}
 		let provider = this._createProvider(data.registerOptions);
 		if (provider) {
 			this._providers.set(data.id, provider);
+			return provider;
 		}
 	}
 
@@ -1620,103 +1621,152 @@ export class LanguageClient {
 		}
 		let selectorOptions: TextDocumentRegistrationOptions = { documentSelector: documentSelector };
 		let registeredHandlers: FeatureHandlerMap = this._registeredHandlers as FeatureHandlerMap;
+		let provider: any;
 		if (this._capabilites.completionProvider) {
 			let options: CompletionRegistrationOptions = Object.assign({}, selectorOptions, this._capabilites.completionProvider);
-			registeredHandlers.get(CompletionRequest.type.method).register(
+			provider = registeredHandlers.get(CompletionRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 		if (this._capabilites.hoverProvider) {
-			registeredHandlers.get(HoverRequest.type.method).register(
+			provider = registeredHandlers.get(HoverRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 		if (this._capabilites.signatureHelpProvider) {
 			let options: SignatureHelpRegistrationOptions = Object.assign({}, selectorOptions, this._capabilites.signatureHelpProvider);
-			registeredHandlers.get(SignatureHelpRequest.type.method).register(
+			provider = registeredHandlers.get(SignatureHelpRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.definitionProvider) {
-			registeredHandlers.get(DefinitionRequest.type.method).register(
+			provider = registeredHandlers.get(DefinitionRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.referencesProvider) {
-			registeredHandlers.get(ReferencesRequest.type.method).register(
+			provider = registeredHandlers.get(ReferencesRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentHighlightProvider) {
-			registeredHandlers.get(DocumentHighlightRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentHighlightRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentSymbolProvider) {
-			registeredHandlers.get(DocumentSymbolRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentSymbolRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.workspaceSymbolProvider) {
-			registeredHandlers.get(WorkspaceSymbolRequest.type.method).register(
+			provider = registeredHandlers.get(WorkspaceSymbolRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.codeActionProvider) {
-			registeredHandlers.get(CodeActionRequest.type.method).register(
+			provider = registeredHandlers.get(CodeActionRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.codeLensProvider) {
 			let options: CodeLensRegistrationOptions = Object.assign({}, selectorOptions, this._capabilites.codeLensProvider);
-			registeredHandlers.get(CodeLensRequest.type.method).register(
+			provider = registeredHandlers.get(CodeLensRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentFormattingProvider) {
-			registeredHandlers.get(DocumentFormattingRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentFormattingRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentRangeFormattingProvider) {
-			registeredHandlers.get(DocumentRangeFormattingRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentRangeFormattingRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentOnTypeFormattingProvider) {
 			let options: DocumentOnTypeFormattingRegistrationOptions = Object.assign({}, selectorOptions, this._capabilites.documentOnTypeFormattingProvider);
-			registeredHandlers.get(DocumentOnTypeFormattingRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentOnTypeFormattingRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.renameProvider) {
-			registeredHandlers.get(RenameRequest.type.method).register(
+			provider = registeredHandlers.get(RenameRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: Object.assign({}, selectorOptions) }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 
 		if (this._capabilites.documentLinkProvider) {
 			let options: DocumentLinkRegistrationOptions = Object.assign({}, selectorOptions, this._capabilites.documentLinkProvider);
-			registeredHandlers.get(DocumentLinkRequest.type.method).register(
+			provider = registeredHandlers.get(DocumentLinkRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 		if (this._capabilites.executeCommandProvider) {
 			let options: ExecuteCommandRegistrationOptions = Object.assign({}, this._capabilites.executeCommandProvider);
-			registeredHandlers.get(ExecuteCommandRequest.type.method).register(
+			provider = registeredHandlers.get(ExecuteCommandRequest.type.method).register(
 				{ id: UUID.generateUuid(), registerOptions: options }
 			);
+			if (provider && this._providers) {
+				this._providers.push(provider);
+			}
 		}
 	}
 
